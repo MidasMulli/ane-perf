@@ -1,6 +1,6 @@
 # ane-perf
 
-Hardware performance characterization of the Apple Neural Engine via IOReport bandwidth histograms. First public measurement of ANE bandwidth behavior, SRAM boundaries, and dispatch thresholds on Apple Silicon.
+Hardware performance characterization of the Apple Neural Engine via IOReport bandwidth histograms. First published characterization of ANE bandwidth behavior, SRAM boundaries, and dispatch thresholds during LLM inference on Apple Silicon.
 
 No root. No SIP changes. No entitlements. Runs on any Mac with Apple Silicon.
 
@@ -48,15 +48,15 @@ enumerate.py has no dependencies beyond the standard library.
 ANE performance falls into three zones based on per-layer weight size relative to the 32MB on-chip L2 SRAM:
 
 ```
-         Zone 1: SRAM          Zone 2: SRAM+Stream      Zone 3: DRAM-bound
-      weights fit in L2        weights spill, DMA       weights >> SRAM
-        < ~25 MB/layer         overlaps compute          > ~50 MB/layer
-                                25-35 MB/layer
+      Zone 1: SRAM-resident    Zone 2: SRAM thrashing    Zone 3: DRAM streaming
+      weights fit in L2        weights barely spill,     weights clearly exceed SRAM,
+        < ~19 MB/layer         futile caching attempts   DMA pipelines efficiently
+                                19-34 MB/layer            > ~34 MB/layer
 
   ms   |                                    .
   per  |                                 .
   pred |                              .
-       |                         x    (4x cliff)
+       |                         x    (4x cliff at 32MB)
        |                      .
        |                   .
        |                .
@@ -73,10 +73,19 @@ Measured on M5 Air (8-layer Conv1d, FP16, 100 iterations each):
 | 2048 | 8.4 MB | 1.128 | 125 | 86.4% | 25.3/31 | SRAM |
 | 2560 | 13.1 MB | 1.614 | 184 | 90.8% | 27.2/31 | SRAM |
 | 3072 | 18.9 MB | 2.256 | 258 | 93.0% | 28.1/31 | SRAM |
-| 3584 | 25.7 MB | 3.020 | 347 | 94.7% | 28.8/31 | Stream |
-| **4096** | **33.6 MB** | **12.045** | **1,133** | **98.7%** | **20.2/31** | **Spill** |
+| 3584 | 25.7 MB | 3.020 | 347 | 94.7% | 28.8/31 | SRAM |
+| **4096** | **33.6 MB** | **12.045** | **1,133** | **98.7%** | **20.2/31** | **Thrashing** |
 
 At 33.6 MB per layer (just over 32 MB SRAM): **4x latency, 3.3x energy**. ANE average bandwidth state *drops* from 28.8 to 20.2 despite 98.7% utilization -- the hardware is spending more time stalled on DRAM weight reloads.
+
+## Prior Work
+
+This repo extends and in some cases corrects earlier ANE research:
+
+- [maderix/ANE](https://github.com/maderix/ANE) identified `_ANEPerformanceStats` counters and first measured the SRAM performance cliff from wall-clock timing. His finding that "conv is 3x faster than matmul" on ANE motivated our controlled measurement (Finding 1 below), which shows the difference is CoreML scheduling, not ANE hardware.
+- The [Orion paper](https://arxiv.org/abs/2603.06728) catalogued ANE architectural constraints and informed our experiment design.
+- [hollance/neural-engine](https://github.com/hollance/neural-engine) documents CoreML compilation behavior and ANE operator support.
+- [ANEMLL/Anemll](https://github.com/ANEMLL/Anemll) provides the CoreML conversion pipeline we used for confirmed-ANE reference models.
 
 ## Findings
 
@@ -221,5 +230,8 @@ MIT
 
 ## Related
 
+- [maderix/ANE](https://github.com/maderix/ANE) -- ANE reverse engineering, _ANEPerformanceStats discovery, SRAM cliff wall-clock measurements
+- [hollance/neural-engine](https://github.com/hollance/neural-engine) -- CoreML compilation behavior and ANE operator documentation
+- [ANEMLL/Anemll](https://github.com/ANEMLL/Anemll) -- LLM to CoreML conversion pipeline for ANE inference
 - [four-path-mlx](https://github.com/MidasMulli/four-path-mlx) -- Multi-source speculative decoding on Apple Silicon
 - [orion-ane](https://github.com/MidasMulli/orion-ane) -- Phantom agent with three-tier ANE architecture
