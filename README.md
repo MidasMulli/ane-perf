@@ -299,3 +299,5 @@ MIT
 - [ANEMLL/Anemll](https://github.com/ANEMLL/Anemll) -- LLM to CoreML conversion pipeline for ANE inference
 - [four-path-mlx](https://github.com/MidasMulli/four-path-mlx) -- Multi-source speculative decoding on Apple Silicon
 - [orion-ane](https://github.com/MidasMulli/orion-ane) -- Phantom agent with three-tier ANE architecture
+- [gdn-coreml](https://github.com/MidasMulli/gdn-coreml) -- GatedDeltaNet SSM to CoreML converter
+- [dual-path-inference](https://github.com/MidasMulli/dual-path-inference) -- GPU+ANE concurrency proof-of-concept (archived)
