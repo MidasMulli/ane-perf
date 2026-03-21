@@ -1,0 +1,250 @@
+{
+  "source": "ANEH17Hidra_PerfCtr table, macOS 26.3 kernelcache",
+  "hardware": "M5 Air, H17 Hidra, 16 NE cores, version 224",
+  "counters": [
+    {
+      "name": "ANE_NE_NOMINAL_CYCLES",
+      "index": 23,
+      "category": "Clock Cycles",
+      "registers": [
+        "0x019781a0",
+        "0x01978118",
+        "0x019141a0",
+        "0x019101a0",
+        "0x019100c0"
+      ]
+    },
+    {
+      "name": "ANE_NE_THROTTLE_CYCLES",
+      "index": 24,
+      "category": "Throttle",
+      "registers": [
+        "0x019781b0",
+        "0x01978128",
+        "0x019141b0",
+        "0x019101b0",
+        "0x019100c8"
+      ]
+    },
+    {
+      "name": "ANE_L2_THROTTLE_CYCLES",
+      "index": 25,
+      "category": "Throttle",
+      "registers": [
+        "0x01978278",
+        "0x019100d0"
+      ]
+    },
+    {
+      "name": "ANE_NE_COMPUTE_CYCLES",
+      "index": 26,
+      "category": "Compute",
+      "registers": [
+        "0x019781d0",
+        "0x01978148",
+        "0x019141d0",
+        "0x019101d0",
+        "0x019100d8"
+      ]
+    },
+    {
+      "name": "ANE_NE_INPUT_STALL_CYCLES",
+      "index": 27,
+      "category": "Stall",
+      "registers": [
+        "0x019781e0",
+        "0x01978158",
+        "0x019141e0",
+        "0x019101e0",
+        "0x019100e0"
+      ]
+    },
+    {
+      "name": "ANE_NE_OUTPUT_STALL_CYCLES",
+      "index": 28,
+      "category": "Stall",
+      "registers": [
+        "0x019781e8",
+        "0x01978160"
+      ]
+    },
+    {
+      "name": "ANE_NE_KERNEL_STALL_CYCLES",
+      "index": 29,
+      "category": "Stall",
+      "registers": [
+        "0x019781d8",
+        "0x01978150",
+        "0x019141d8",
+        "0x019101d8",
+        "0x019100f0"
+      ]
+    },
+    {
+      "name": "ANE_DMA_READWRITE_BYTES",
+      "index": 30,
+      "category": "DMA/Bandwidth",
+      "registers": [
+        "0x019784b0",
+        "0x019784c8",
+        "0x01910468",
+        "0x019144c8",
+        "0x019100f8"
+      ]
+    },
+    {
+      "name": "ANE_DMA_READ_BYTES",
+      "index": 31,
+      "category": "DMA/Bandwidth",
+      "registers": [
+        "0x019784a0",
+        "0x019784b8",
+        "0x01910458",
+        "0x019144b8",
+        "0x01910100"
+      ]
+    },
+    {
+      "name": "ANE_DPE_ENERGY",
+      "index": 32,
+      "category": "Energy",
+      "registers": [
+        "0x019780e0",
+        "0x019140e0",
+        "0x01910108",
+        "0x019100e0"
+      ]
+    },
+    {
+      "name": "ANE_L2_NOMINAL_CYCLES",
+      "index": 33,
+      "category": "Clock Cycles",
+      "registers": [
+        "0x019782b0",
+        "0x01910110",
+        "0x01910250",
+        "0x019142b0"
+      ]
+    },
+    {
+      "name": "ANE_L2PE_COMPUTE_CYCLES",
+      "index": 34,
+      "category": "Compute",
+      "registers": [
+        "0x01978468",
+        "0x019782c8",
+        "0x01978270",
+        "0x019142c8",
+        "0x01910268",
+        "0x01910118"
+      ]
+    },
+    {
+      "name": "ANE_L2PE_INPUT_STALL_CYCLES",
+      "index": 35,
+      "category": "Stall",
+      "registers": [
+        "0x01978458",
+        "0x019782c0",
+        "0x019782b8",
+        "0x019142b8",
+        "0x01910258",
+        "0x01910120"
+      ]
+    },
+    {
+      "name": "ANE_L2PE_OUTPUT_STALL_CYCLES",
+      "index": 36,
+      "category": "Stall",
+      "registers": [
+        "0x01978460",
+        "0x019782c8",
+        "0x01910128"
+      ]
+    },
+    {
+      "name": "ANE_MAC_THOTTLE_WIN0",
+      "index": 37,
+      "category": "MAC",
+      "registers": [
+        "0x01978540",
+        "0x01978550",
+        "0x01978558",
+        "0x019782f0",
+        "0x019104f8",
+        "0x01914558"
+      ]
+    },
+    {
+      "name": "ANE_NE_ACTIVITY_COUNT",
+      "index": 38,
+      "category": "Activity",
+      "registers": [
+        "0x01978210",
+        "0x01978188"
+      ]
+    },
+    {
+      "name": "ANE_NE_ACTIVITY_COUNT_NZD",
+      "index": 39,
+      "category": "Activity",
+      "registers": [
+        "0x01978218",
+        "0x01978190"
+      ]
+    },
+    {
+      "name": "ANE_NE_THERMAL_THROTTLE_CYCLES",
+      "index": 40,
+      "category": "Thermal",
+      "registers": [
+        "0x01978140"
+      ]
+    },
+    {
+      "name": "ANE_L2_THERMAL_THROTTLE_CYCLES",
+      "index": 41,
+      "category": "Thermal",
+      "registers": [
+        "0x01978290",
+        "0x019783f0"
+      ]
+    },
+    {
+      "name": "ANE_NE_INPUT_STALL_CYCLE",
+      "index": 27,
+      "category": "Stall",
+      "registers": []
+    },
+    {
+      "name": "ANE_FP16_CYCLES",
+      "index": -1,
+      "category": "Datatype",
+      "registers": []
+    },
+    {
+      "name": "ANE_INT8_CYCLES",
+      "index": -1,
+      "category": "Datatype",
+      "registers": []
+    },
+    {
+      "name": "ANE_KM_STALL_CYCLES",
+      "index": -1,
+      "category": "Stall",
+      "registers": []
+    },
+    {
+      "name": "ANE_L2_READ_STALL_CYCLES",
+      "index": -1,
+      "category": "Stall",
+      "registers": []
+    },
+    {
+      "name": "ANE_L2_WRITE_STALL_CYCLES",
+      "index": -1,
+      "category": "Stall",
+      "registers": []
+    }
+  ]
+}

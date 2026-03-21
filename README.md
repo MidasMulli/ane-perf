@@ -12,6 +12,13 @@ python3 enumerate.py
 ```
 Reads PerfTracer symbols from ANEServices.framework (counter names only -- values are daemon-locked). Also attempts to enumerate 25 `_ANEPerformanceStats` counter names if pyobjc is installed.
 
+**kext_analysis.py** -- ANE kext reverse engineering: dispatch tables, hardware counters, register addresses.
+```bash
+python3 kext_analysis.py                    # Print full analysis summary
+python3 kext_analysis.py --dump-counters    # JSON dump of all counters with registers
+```
+Static analysis results extracted from the decompressed macOS 26.3 kernelcache. Includes 25 hardware counter names with MMIO register addresses, IOKit selector dispatch tables for both UserClient (11 selectors) and DirectPathClient (9 selectors), entitlement requirements, and the perf counter access architecture.
+
 **measure.py** -- Measure ANE bandwidth, energy, and throttle state during CoreML inference.
 ```bash
 python3 measure.py model.mlpackage              # measure a model
@@ -251,6 +258,38 @@ Counter names extracted from `ANEServices.framework` via `PerfTracerMetricToStri
 
 Hardware topology: 16 NE sub-units (ne_0 through ne_15), plus l2, dma_read, dma_write, kernel_read, pe blocks. See `data/counters.json` for the full annotated list.
 
+### ANEH17Hidra PerfCtr (25 Counters with Register Addresses)
+
+Extracted from the kernelcache `ANEH17Hidra_PerfCtr` table via kext disassembly (`kext_analysis.py`). These are MMIO register addresses on the ANE die. Each counter maps to 1-6 register addresses, likely corresponding to per-cluster or per-configuration views.
+
+| Category | Counter | Index | Registers |
+|----------|---------|-------|-----------|
+| Clock Cycles | ANE_NE_NOMINAL_CYCLES | 23 | 5 addrs |
+| Clock Cycles | ANE_L2_NOMINAL_CYCLES | 33 | 4 addrs |
+| Compute | ANE_NE_COMPUTE_CYCLES | 26 | 5 addrs |
+| Compute | ANE_L2PE_COMPUTE_CYCLES | 34 | 6 addrs |
+| Stall | ANE_NE_INPUT_STALL_CYCLES | 27 | 5 addrs |
+| Stall | ANE_NE_OUTPUT_STALL_CYCLES | 28 | 2 addrs |
+| Stall | ANE_NE_KERNEL_STALL_CYCLES | 29 | 5 addrs |
+| Stall | ANE_L2PE_INPUT_STALL_CYCLES | 35 | 6 addrs |
+| Stall | ANE_L2PE_OUTPUT_STALL_CYCLES | 36 | 3 addrs |
+| Throttle | ANE_NE_THROTTLE_CYCLES | 24 | 5 addrs |
+| Throttle | ANE_L2_THROTTLE_CYCLES | 25 | 2 addrs |
+| Thermal | ANE_NE_THERMAL_THROTTLE_CYCLES | 40 | 1 addr |
+| Thermal | ANE_L2_THERMAL_THROTTLE_CYCLES | 41 | 2 addrs |
+| DMA | ANE_DMA_READWRITE_BYTES | 30 | 5 addrs |
+| DMA | ANE_DMA_READ_BYTES | 31 | 5 addrs |
+| Energy | ANE_DPE_ENERGY | 32 | 4 addrs |
+| Activity | ANE_NE_ACTIVITY_COUNT | 38 | 2 addrs |
+| Activity | ANE_NE_ACTIVITY_COUNT_NZD | 39 | 2 addrs |
+| MAC | ANE_MAC_THOTTLE_WIN0 | 37 | 6 addrs |
+| Datatype | ANE_FP16_CYCLES | — | — |
+| Datatype | ANE_INT8_CYCLES | — | — |
+
+Register address ranges: `0x01910xxx` (base config), `0x01914xxx` (alt config), `0x01978xxx` (primary config). The multiple register banks suggest per-NE-cluster counters or different sampling configurations.
+
+Additional counter names found without register mapping: `ANE_KM_STALL_CYCLES`, `ANE_L2_READ_STALL_CYCLES`, `ANE_L2_WRITE_STALL_CYCLES`.
+
 ### IOReport (Live, No Root)
 
 Bandwidth histograms from the PMP (Power Management Processor) group:
@@ -271,17 +310,44 @@ ANE performance data flows through two layers:
 
 1. **IOReport** (accessible): Kernel-level SoC counters sampled by the Power Management Processor. 32-state bandwidth histograms, energy, throttle state. No root required. This is what measure.py uses.
 
-2. **PerfTracer** (names only): 63 fine-grained hardware counters inside the ANE. Names are readable from userspace. Values require the `aned` daemon's perf buffer, which is allocated daemon-side and never shared to client processes. IOKit selectors 0-31 all return NotReady from client connections. Getting values would require running as aned (SIP disabled), a kernel extension, or an Apple-signed entitlement.
+2. **PerfTracer / PerfCtr** (names and register addresses only): Fine-grained hardware counters inside the ANE. 63 PerfTracer counter names readable from ANEServices.framework. 25 PerfCtr counter names with MMIO register addresses extracted from kernelcache ANEH17Hidra tables. Values require the `aned` daemon or the `com.apple.ane.iokit-user-access` entitlement.
 
-The ANE driver architecture:
-- Load path: client -> XPC -> aned daemon -> IOKit driver
-- Eval path: client -> ANEServicesProgramProcessRequestDirect (C++ vtable) -> daemon
-- Perf buffer: allocated by daemon, never returned to client
-- `ANEDeviceStruct.connection` (ptr[0]) is a C++ vtable of function pointers, not a mach port
+### Kext Internals (from kext disassembly)
+
+The ANE driver exposes two IOKit user client classes:
+
+- **H11ANEInUserClient**: 11 selectors, general-purpose ANE access
+- **H11ANEInDirectPathClient**: 9 selectors, optimized direct inference path
+
+Key dispatch table entries (run `kext_analysis.py` for the full table):
+
+| Selector | Input | Output | Purpose |
+|----------|-------|--------|---------|
+| 0 | 0x68 | 0x68 | Device handshake |
+| 2 | 0x948 | 0x28 | **Program submit** (main inference path) |
+| 9 | 0x10 | 0x18 | Performance stats query |
+
+Performance counter values are collected during inference, not via a standalone selector:
+
+1. Client sets `perfStatsMask` in the evaluation request (via `kANEFPerformanceStatsMaskKey`)
+2. **Selector 2** submits the program to ANE (0x948-byte input struct)
+3. Kernel calls `ANEHWDevice::ReadPerformanceCounters()` during execution
+4. `AppleANEPerfCounterReadFunction::callFunction()` reads MMIO registers
+5. Results returned to caller via IOSurface shared memory
+
+### Entitlement Barrier
+
+Opening the IOKit connection requires `com.apple.ane.iokit-user-access`. Unsigned processes are SIGKILL'd on `IOServiceOpen()`. Only `aned` (`/usr/libexec/aned`) and Apple-signed frameworks hold this entitlement.
+
+The userspace ANE stack: CoreML -> Espresso -> AppleNeuralEngine.framework -> `aned` daemon -> IOKit driver. The `_ANEPerformanceStats` and `_ANEPerformanceStatsIOSurface` classes in AppleNeuralEngine.framework handle perf stat delivery, but are only usable from entitled processes.
+
+### What This Means
+
+Getting PerfTracer counter values from userspace without SIP changes is not possible on current macOS. The counter names and register addresses documented here are the most that can be extracted. IOReport bandwidth/energy/throttle data (what measure.py provides) remains the richest ANE performance data accessible without entitlements.
 
 ## Open Questions
 
-1. **PerfTracer values**: How to read the 63 fine-grained counters without SIP changes? The `initWithRequestPerformanceBuffer:` method signature suggests the daemon could return this data, but it doesn't.
+1. **PerfTracer values**: Kext disassembly confirms counter values are read via `ANEHWDevice::ReadPerformanceCounters()` during inference, gated by `perfStatsMask` and the `com.apple.ane.iokit-user-access` entitlement. No userspace path exists without SIP changes or running as aned. The counter names and MMIO register addresses documented in this repo are the maximum extractable information.
 
 2. **SRAM streaming anomaly**: Why is a 52 MB single layer faster than a 33.6 MB single layer? Is ANE's tiling/scheduling optimized for clear-spill cases?
 
@@ -289,7 +355,9 @@ The ANE driver architecture:
 
 4. **BW state nonlinearity at extremes**: The calibration curve (Finding 6) is roughly linear in the 22-28 state range but distorts at high DRAM saturation. What drives the nonlinearity?
 
-5. **Concurrent execution mechanism**: Multi-model median latency is unaffected but variance increases 18x (Finding 7). Is this dispatch-level serialization (CoreML queue contention) or hardware-level time-slicing? PerfTracer ne_cycle counters would resolve this.
+5. **Concurrent execution mechanism**: Multi-model median latency is unaffected but variance increases 18x (Finding 7). Is this dispatch-level serialization (CoreML queue contention) or hardware-level time-slicing? The ANE_NE_COMPUTE_CYCLES and ANE_NE_STALL_CYCLES counters (indices 26, 27) would resolve this, but require entitlement access.
+
+6. **Register bank mapping**: The ANEH17Hidra_PerfCtr table maps each counter to 1-6 MMIO register addresses across three address ranges (0x01910xxx, 0x01914xxx, 0x01978xxx). Are these per-NE-cluster views, per-power-domain views, or different sampling configurations?
 
 ## Answered Questions
 
