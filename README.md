@@ -82,6 +82,8 @@ Measured on M5 Air (8-layer Conv1d, FP16, 100 iterations each):
 
 At 33.6 MB per layer (just over 32 MB SRAM): **4x latency, 3.3x energy**. ANE average bandwidth state *drops* from 28.8 to 20.2 despite 98.7% utilization -- the hardware is spending more time stalled on DRAM weight reloads.
 
+*Measured with synthetic Conv1d models (single matmul per layer). Boundaries may differ for real transformer layers with attention, KV cache access patterns, and mixed operation types.*
+
 ## Prior Work
 
 This repo extends and in some cases corrects earlier ANE research:
@@ -108,7 +110,7 @@ When both operations actually run on ANE, they are identical within measurement 
 
 Same energy. Same bandwidth utilization. Same everything. CoreML compiles both to the same ANE operation.
 
-The real difference: CoreML's scheduler routes Conv ops to ANE at lower thresholds than Linear. At dim=1536, Conv gets 79.7% ANE utilization while Linear stays on CPU. This is a CoreML scheduling decision, not an ANE hardware property.
+The real difference: CoreML's scheduler routes Conv ops to ANE at lower thresholds than Linear. At dim=1536, Conv gets 79.7% ANE utilization while Linear stays on CPU. At seq_len=1, Linear gets 71% ANE utilization vs Conv at 86%. At seq_len >= 4, both are identical. This is a CoreML scheduling decision, not an ANE hardware property.
 
 ### 2. CoreML Dispatch Threshold
 
@@ -175,18 +177,20 @@ Linear regression across the 22-28 state range: **GB/s ≈ 2.76 × state - 10.2*
 
 This calibration corrects the naive formula `(avg_state / 31) × 153.6 GB/s` which overestimates by ~2x because it assumes ANE can consume the full system DRAM bandwidth.
 
-### 7. Multi-Model Concurrent Execution
+### 7. Multi-Model Interference
 
-Running two CoreML models simultaneously on ANE shows **zero interference**:
+Running two CoreML models simultaneously on ANE (both individually confirmed on ANE, util > 0 when run alone):
 
-| Condition | Model B ms/pred | ANE util | ANE energy |
-|-----------|----------------|----------|------------|
-| Model B alone | 2.274 | 93.0% | 258 |
-| Model B + Model A background | 2.232 | 99.6% | 2,596 |
+| Condition | Median ms/pred | Mean ms/pred | CV | Runs |
+|-----------|---------------|-------------|-----|------|
+| Model B alone (dim=3072) | 2.267 | 2.275 ± 0.046 | 2.0% | 5 × 1000 iters |
+| Model B + Model A (dim=2048) bg | 2.240 | 2.596 ± 0.960 | 37.0% | 7 × 1000 iters |
 
-Slowdown: **0.98x** (within noise). The background model completed 5,930 predictions while the foreground model ran 100 -- both at full speed. Energy jumped 10x confirming both models are active. ANE utilization rose from 93% to 99.6%.
+Median slowdown: **0.99x**. Mean slowdown: **1.14x**. The difference is one outlier run (4.773ms, ~2x baseline) out of 7. The other 6 concurrent runs fall within baseline range.
 
-This means ANE either has concurrent execution capability or serializes models fast enough that per-prediction latency is unaffected. Either way, running multiple CoreML models on ANE does not degrade individual model performance.
+Background model prediction counts vary widely across runs (5,100 to 66,429), suggesting CoreML's dispatch scheduler is non-deterministic under contention. The occasional latency spike is consistent with dispatch-level serialization when both models' CoreML calls collide, not sustained hardware contention.
+
+No measurable interference at median latency, but expect occasional scheduling spikes under concurrent load. True sub-unit parallelism vs fast serialization cannot be distinguished from IOReport data alone -- that would require PerfTracer internal counters.
 
 ### 8. No Thermal Throttling Under Sustained Load
 
@@ -285,7 +289,7 @@ The ANE driver architecture:
 
 4. **BW state nonlinearity at extremes**: The calibration curve (Finding 6) is roughly linear in the 22-28 state range but distorts at high DRAM saturation. What drives the nonlinearity?
 
-5. **Concurrent execution mechanism**: Multi-model runs show zero interference (Finding 7), but we can't distinguish between true hardware concurrency and fast time-slicing from IOReport data alone. PerfTracer values would resolve this.
+5. **Concurrent execution mechanism**: Multi-model median latency is unaffected but variance increases 18x (Finding 7). Is this dispatch-level serialization (CoreML queue contention) or hardware-level time-slicing? PerfTracer ne_cycle counters would resolve this.
 
 ## Answered Questions
 

@@ -661,25 +661,24 @@ def exp_thermal(sampler):
 
 
 def exp_multimodel(sampler):
-    """Multi-model interference: does ANE serialize or allow concurrency?
+    """Multi-model interference with variance measurement.
 
-    Run two CoreML models simultaneously. Model A runs continuously on a
-    background thread. Model B runs measured predictions on the main thread.
-    Compare Model B's latency with and without Model A running.
+    Run two CoreML models simultaneously. Verify both individually use ANE.
+    Multiple runs with 1000 iterations each. Report mean, median, std dev.
     """
     print("\n" + "=" * 85)
     print("  MULTI-MODEL INTERFERENCE")
-    print("  Model A (dim=2048) background thread + Model B (dim=3072) measured.")
-    print("  Compare Model B latency with/without background load.")
+    print("  Model A (dim=2048) + Model B (dim=3072), both 8-layer Conv1d.")
+    print("  Verify both on ANE individually, then measure concurrent impact.")
+    print("  5 baseline runs + 7 concurrent runs, 1000 iters each.")
     print("=" * 85)
 
     import coremltools as ct
     import threading
+    import statistics
 
-    # Build two different models
     path_a, _ = build_model(2048, n_layers=8, op='conv1d')
     path_b, _ = build_model(3072, n_layers=8, op='conv1d')
-
     ml_a = ct.models.MLModel(path_a, compute_units=ct.ComputeUnit.CPU_AND_NE)
     ml_b = ct.models.MLModel(path_b, compute_units=ct.ComputeUnit.CPU_AND_NE)
 
@@ -693,78 +692,100 @@ def exp_multimodel(sampler):
 
     inputs_a = make_inputs(ml_a)
     inputs_b = make_inputs(ml_b)
-
-    # Warmup both
-    for _ in range(10):
+    for _ in range(50):
         ml_a.predict(inputs_a)
         ml_b.predict(inputs_b)
 
     results = {}
+    N = 1000
 
-    # Baseline: Model B alone
-    print(f"\n  Model B alone (100 iterations)...")
-    before = sampler.capture()
-    t0 = time.perf_counter()
-    for _ in range(100):
-        ml_b.predict(inputs_b)
-    elapsed = time.perf_counter() - t0
-    after = sampler.capture()
-    r_alone = sampler.delta(before, after)
-    a_alone = get_ane(r_alone)
-    ms_alone = elapsed * 1000 / 100
+    # Verify both models individually on ANE
+    print(f"\n  Individual ANE verification:")
+    for label, ml, inp in [('Model A (2048)', ml_a, inputs_a),
+                            ('Model B (3072)', ml_b, inputs_b)]:
+        before = sampler.capture()
+        t0 = time.perf_counter()
+        for _ in range(100):
+            ml.predict(inp)
+        elapsed = time.perf_counter() - t0
+        after = sampler.capture()
+        r = sampler.delta(before, after)
+        a = get_ane(r)
+        ms = elapsed * 1000 / 100
+        on_ane = "YES" if a['util'] > 0.01 else "NO"
+        print(f"    {label}: {ms:.3f} ms  ANE util={a['util']:.1%}  "
+              f"energy={a['energy']:,}  on ANE: {on_ane}")
+        results[f'{label}_individual'] = {
+            'ms': round(ms, 3), 'on_ane': a['util'] > 0.01, **a}
 
-    print(f"    ms/pred: {ms_alone:.3f}  ANE util: {a_alone['util']:.1%}  "
-          f"ANE avg: {a_alone['avg']:.1f}  energy: {a_alone['energy']:,}")
-    results['alone'] = {'ms': round(ms_alone, 3), **a_alone}
-
-    # Background load: Model A on background thread
-    stop_flag = threading.Event()
-    bg_count = [0]
-
-    def background_load():
-        while not stop_flag.is_set():
-            ml_a.predict(inputs_a)
-            bg_count[0] += 1
-
-    print(f"\n  Model B with Model A background (100 iterations)...")
-    bg_thread = threading.Thread(target=background_load, daemon=True)
-    bg_thread.start()
-    time.sleep(0.5)  # let background warm up
-
-    before = sampler.capture()
-    t0 = time.perf_counter()
-    for _ in range(100):
-        ml_b.predict(inputs_b)
-    elapsed = time.perf_counter() - t0
-    after = sampler.capture()
-
-    stop_flag.set()
-    bg_thread.join(timeout=5)
-
-    r_concurrent = sampler.delta(before, after)
-    a_concurrent = get_ane(r_concurrent)
-    ms_concurrent = elapsed * 1000 / 100
-
-    print(f"    ms/pred: {ms_concurrent:.3f}  ANE util: {a_concurrent['util']:.1%}  "
-          f"ANE avg: {a_concurrent['avg']:.1f}  energy: {a_concurrent['energy']:,}")
-    print(f"    Background model completed {bg_count[0]} predictions during test")
-    results['concurrent'] = {
-        'ms': round(ms_concurrent, 3),
-        'bg_preds': bg_count[0],
-        **a_concurrent,
+    # Baseline: Model B alone, 5 runs
+    print(f"\n  Baseline (Model B alone, {N} iters × 5 runs):")
+    base_ms = []
+    for run in range(5):
+        t0 = time.perf_counter()
+        for _ in range(N):
+            ml_b.predict(inputs_b)
+        ms = (time.perf_counter() - t0) * 1000 / N
+        base_ms.append(ms)
+        print(f"    Run {run+1}: {ms:.3f} ms")
+    bm = statistics.mean(base_ms)
+    bs = statistics.stdev(base_ms)
+    bmed = statistics.median(base_ms)
+    print(f"    Mean: {bm:.3f} ± {bs:.3f} ms  "
+          f"Median: {bmed:.3f} ms  CV: {bs/bm*100:.1f}%")
+    results['baseline'] = {
+        'mean': round(bm, 3), 'std': round(bs, 3),
+        'median': round(bmed, 3), 'cv_pct': round(bs/bm*100, 1),
+        'runs': [round(m, 3) for m in base_ms],
     }
 
-    # Analysis
-    slowdown = ms_concurrent / ms_alone if ms_alone > 0 else 0
-    print(f"\n  Interference: {slowdown:.2f}x slowdown "
-          f"({ms_alone:.3f} → {ms_concurrent:.3f} ms/pred)")
-    if slowdown > 1.8:
-        print(f"  → ANE likely SERIALIZES execution (near 2x = time-shared)")
-    elif slowdown > 1.2:
-        print(f"  → Partial interference (shared bandwidth, not fully serial)")
-    else:
-        print(f"  → Minimal interference (separate queues or concurrent execution)")
-    results['slowdown'] = round(slowdown, 2)
+    # Concurrent: Model B + Model A background, 7 runs
+    print(f"\n  Concurrent (Model B + bg Model A, {N} iters × 7 runs):")
+    conc_ms = []
+    for run in range(7):
+        stop = threading.Event()
+        bg_n = [0]
+        def bg():
+            while not stop.is_set():
+                ml_a.predict(inputs_a)
+                bg_n[0] += 1
+        t = threading.Thread(target=bg, daemon=True)
+        t.start()
+        time.sleep(1.0)
+
+        t0 = time.perf_counter()
+        for _ in range(N):
+            ml_b.predict(inputs_b)
+        ms = (time.perf_counter() - t0) * 1000 / N
+
+        stop.set()
+        t.join(timeout=5)
+        conc_ms.append(ms)
+        print(f"    Run {run+1}: {ms:.3f} ms  (bg completed: {bg_n[0]})")
+
+    cm = statistics.mean(conc_ms)
+    cs = statistics.stdev(conc_ms)
+    cmed = statistics.median(conc_ms)
+    print(f"    Mean: {cm:.3f} ± {cs:.3f} ms  "
+          f"Median: {cmed:.3f} ms  CV: {cs/cm*100:.1f}%")
+    results['concurrent'] = {
+        'mean': round(cm, 3), 'std': round(cs, 3),
+        'median': round(cmed, 3), 'cv_pct': round(cs/cm*100, 1),
+        'runs': [round(m, 3) for m in conc_ms],
+    }
+
+    # Summary
+    mean_slow = cm / bm
+    med_slow = cmed / bmed
+    print(f"\n  Summary:")
+    print(f"    Mean slowdown:   {mean_slow:.2f}x")
+    print(f"    Median slowdown: {med_slow:.2f}x")
+    print(f"    Baseline CV:     {bs/bm*100:.1f}%")
+    print(f"    Concurrent CV:   {cs/cm*100:.1f}%")
+    outliers = sum(1 for m in conc_ms if m > bm + 3 * bs)
+    print(f"    Outlier runs (>3σ from baseline): {outliers}/{len(conc_ms)}")
+    results['mean_slowdown'] = round(mean_slow, 2)
+    results['median_slowdown'] = round(med_slow, 2)
 
     return results
 
