@@ -1,0 +1,699 @@
+{
+  "perftracer": {
+    "metrics": [
+      {
+        "id": 1,
+        "name": "l2_cycle",
+        "category": "L2 SRAM",
+        "description": "Total L2 SRAM clock cycles"
+      },
+      {
+        "id": 2,
+        "name": "l2_src1_read_active_cycle",
+        "category": "L2 SRAM",
+        "description": "L2 source-1 read port active cycles"
+      },
+      {
+        "id": 3,
+        "name": "l2_src1_read_idle_cycle",
+        "category": "L2 SRAM",
+        "description": "L2 source-1 read port idle cycles"
+      },
+      {
+        "id": 4,
+        "name": "l2_src2_read_active_cycle",
+        "category": "L2 SRAM",
+        "description": "L2 source-2 read port active cycles"
+      },
+      {
+        "id": 5,
+        "name": "l2_src2_read_idle_cycle",
+        "category": "L2 SRAM",
+        "description": "L2 source-2 read port idle cycles"
+      },
+      {
+        "id": 6,
+        "name": "l2_write_active_cycle",
+        "category": "L2 SRAM",
+        "description": "L2 write port active cycles"
+      },
+      {
+        "id": 7,
+        "name": "l2_write_idle_cycle",
+        "category": "L2 SRAM",
+        "description": "L2 write port idle cycles"
+      },
+      {
+        "id": 8,
+        "name": "l2_read_conflict_cycle",
+        "category": "L2 SRAM",
+        "description": "L2 read bank conflict cycles"
+      },
+      {
+        "id": 9,
+        "name": "l2_read_intra_conflict_cycle",
+        "category": "L2 SRAM",
+        "description": "L2 read intra-bank conflict cycles"
+      },
+      {
+        "id": 10,
+        "name": "l2_read_conflict_count",
+        "category": "L2 SRAM",
+        "description": "L2 read bank conflict events"
+      },
+      {
+        "id": 11,
+        "name": "l2_read_intra_conflict_count",
+        "category": "L2 SRAM",
+        "description": "L2 read intra-bank conflict events"
+      },
+      {
+        "id": 12,
+        "name": "l2_write_conflict_cycle",
+        "category": "L2 SRAM",
+        "description": "L2 write bank conflict cycles"
+      },
+      {
+        "id": 13,
+        "name": "l2_write_intra_conflict_cycle",
+        "category": "L2 SRAM",
+        "description": "L2 write intra-bank conflict cycles"
+      },
+      {
+        "id": 14,
+        "name": "l2_write_conflict_count",
+        "category": "L2 SRAM",
+        "description": "L2 write bank conflict events"
+      },
+      {
+        "id": 15,
+        "name": "l2_write_intra_conflict_count",
+        "category": "L2 SRAM",
+        "description": "L2 write intra-bank conflict events"
+      },
+      {
+        "id": 16,
+        "name": "dma_src1_read_active_cycle",
+        "category": "DMA",
+        "description": "DMA source-1 read active cycles"
+      },
+      {
+        "id": 17,
+        "name": "dma_src1_read_idle_cycle",
+        "category": "DMA",
+        "description": "DMA source-1 read idle cycles"
+      },
+      {
+        "id": 18,
+        "name": "dma_src1_read_conflict_cycle",
+        "category": "DMA",
+        "description": "DMA source-1 read conflict cycles"
+      },
+      {
+        "id": 19,
+        "name": "dma_src1_read_intra_conflict_cycle",
+        "category": "DMA",
+        "description": "DMA source-1 read intra-conflict cycles"
+      },
+      {
+        "id": 20,
+        "name": "dma_src1_read_conflict_count",
+        "category": "DMA",
+        "description": "DMA source-1 read conflict events"
+      },
+      {
+        "id": 21,
+        "name": "dma_src1_read_intra_conflict_count",
+        "category": "DMA",
+        "description": "DMA source-1 read intra-conflict events"
+      },
+      {
+        "id": 22,
+        "name": "dma_src2_read_active_cycle",
+        "category": "DMA",
+        "description": "DMA source-2 read active cycles"
+      },
+      {
+        "id": 23,
+        "name": "dma_src2_read_idle_cycle",
+        "category": "DMA",
+        "description": "DMA source-2 read idle cycles"
+      },
+      {
+        "id": 24,
+        "name": "dma_src2_read_conflict_cycle",
+        "category": "DMA",
+        "description": "DMA source-2 read conflict cycles"
+      },
+      {
+        "id": 25,
+        "name": "dma_src2_read_intra_conflict_cycle",
+        "category": "DMA",
+        "description": "DMA source-2 read intra-conflict cycles"
+      },
+      {
+        "id": 26,
+        "name": "dma_src2_read_conflict_count",
+        "category": "DMA",
+        "description": "DMA source-2 read conflict events"
+      },
+      {
+        "id": 27,
+        "name": "dma_src2_read_intra_conflict_count",
+        "category": "DMA",
+        "description": "DMA source-2 read intra-conflict events"
+      },
+      {
+        "id": 28,
+        "name": "dma_write_active_cycle",
+        "category": "DMA",
+        "description": "DMA write active cycles"
+      },
+      {
+        "id": 29,
+        "name": "dma_write_idle_cycle",
+        "category": "DMA",
+        "description": "DMA write idle cycles"
+      },
+      {
+        "id": 30,
+        "name": "dma_write_conflict_cycle",
+        "category": "DMA",
+        "description": "DMA write conflict cycles"
+      },
+      {
+        "id": 31,
+        "name": "dma_write_intra_conflict_cycle",
+        "category": "DMA",
+        "description": "DMA write intra-conflict cycles"
+      },
+      {
+        "id": 32,
+        "name": "dma_write_conflict_count",
+        "category": "DMA",
+        "description": "DMA write conflict events"
+      },
+      {
+        "id": 33,
+        "name": "dma_write_intra_conflict_count",
+        "category": "DMA",
+        "description": "DMA write intra-conflict events"
+      },
+      {
+        "id": 34,
+        "name": "idle_cycle",
+        "category": "Fabric/Bus",
+        "description": "Fabric/bus total idle cycles"
+      },
+      {
+        "id": 35,
+        "name": "active_cycle",
+        "category": "Fabric/Bus",
+        "description": "Fabric/bus total active cycles"
+      },
+      {
+        "id": 36,
+        "name": "beat_count_in_64B",
+        "category": "Fabric/Bus",
+        "description": "Fabric data transfer volume (x 64 bytes)"
+      },
+      {
+        "id": 37,
+        "name": "transaction_count",
+        "category": "Fabric/Bus",
+        "description": "Fabric transaction count"
+      },
+      {
+        "id": 38,
+        "name": "latency_product",
+        "category": "Fabric/Bus",
+        "description": "Fabric latency-bandwidth product"
+      },
+      {
+        "id": 39,
+        "name": "latency_threshold",
+        "category": "Memory Cache",
+        "description": "Memory cache latency threshold counter"
+      },
+      {
+        "id": 40,
+        "name": "fabric_stall",
+        "category": "Memory Cache",
+        "description": "SoC fabric stall cycles"
+      },
+      {
+        "id": 41,
+        "name": "mcache_hit_no_dealloc",
+        "category": "Memory Cache",
+        "description": "Memory cache hit (no deallocation)"
+      },
+      {
+        "id": 42,
+        "name": "mcache_miss_alloc",
+        "category": "Memory Cache",
+        "description": "Memory cache miss (allocation triggered)"
+      },
+      {
+        "id": 43,
+        "name": "mcache_non_coh_agent",
+        "category": "Memory Cache",
+        "description": "Memory cache non-coherent agent access"
+      },
+      {
+        "id": 44,
+        "name": "mcache_coh_agent",
+        "category": "Memory Cache",
+        "description": "Memory cache coherent agent access"
+      },
+      {
+        "id": 45,
+        "name": "mcache_miss_no_alloc",
+        "category": "Memory Cache",
+        "description": "Memory cache miss (no allocation)"
+      },
+      {
+        "id": 46,
+        "name": "mcache_hit_depri",
+        "category": "Memory Cache",
+        "description": "Memory cache hit (deprioritized)"
+      },
+      {
+        "id": 47,
+        "name": "mcache_hit_drop",
+        "category": "Memory Cache",
+        "description": "Memory cache hit (dropped)"
+      },
+      {
+        "id": 48,
+        "name": "mcache_hit_no_alloc",
+        "category": "Memory Cache",
+        "description": "Memory cache hit (no allocation)"
+      },
+      {
+        "id": 49,
+        "name": "l2_stall",
+        "category": "Texture/Decomp",
+        "description": "L2 SRAM stall cycles (texture/decomp)"
+      },
+      {
+        "id": 50,
+        "name": "tex_filter_cache_miss",
+        "category": "Texture/Decomp",
+        "description": "Texture filter cache misses"
+      },
+      {
+        "id": 51,
+        "name": "tex_filter_cache_total",
+        "category": "Texture/Decomp",
+        "description": "Texture filter cache total accesses"
+      },
+      {
+        "id": 52,
+        "name": "tex_index_cache_miss",
+        "category": "Texture/Decomp",
+        "description": "Texture index cache misses"
+      },
+      {
+        "id": 53,
+        "name": "tex_index_cache_total",
+        "category": "Texture/Decomp",
+        "description": "Texture index cache total accesses"
+      },
+      {
+        "id": 54,
+        "name": "decomp_metadata_cache_miss",
+        "category": "Texture/Decomp",
+        "description": "Weight decompression metadata cache misses"
+      },
+      {
+        "id": 55,
+        "name": "decomp_metadata_cache_hit",
+        "category": "Texture/Decomp",
+        "description": "Weight decompression metadata cache hits"
+      },
+      {
+        "id": 56,
+        "name": "decomp_data_cache_miss",
+        "category": "Texture/Decomp",
+        "description": "Weight decompression data cache misses"
+      },
+      {
+        "id": 57,
+        "name": "decomp_data_cache_hit",
+        "category": "Texture/Decomp",
+        "description": "Weight decompression data cache hits"
+      },
+      {
+        "id": 58,
+        "name": "ne_stall",
+        "category": "Neural Engine",
+        "description": "Neural engine pipeline stall cycles"
+      },
+      {
+        "id": 59,
+        "name": "kernel_cache_miss",
+        "category": "Neural Engine",
+        "description": "Kernel/weight cache misses"
+      },
+      {
+        "id": 60,
+        "name": "ne_cycle",
+        "category": "Neural Engine",
+        "description": "Neural engine active cycles"
+      },
+      {
+        "id": 61,
+        "name": "mac_cycle",
+        "category": "Neural Engine",
+        "description": "MAC (multiply-accumulate) unit active cycles"
+      },
+      {
+        "id": 62,
+        "name": "nz_count",
+        "category": "Neural Engine",
+        "description": "Non-zero element count (sparsity metric)"
+      },
+      {
+        "id": 63,
+        "name": "kernel_stall",
+        "category": "Neural Engine",
+        "description": "Kernel/weight loading stall cycles"
+      }
+    ],
+    "categories": [
+      {
+        "id": 1,
+        "name": "l2",
+        "annotation": "L2 SRAM (32MB on-chip)"
+      },
+      {
+        "id": 2,
+        "name": "dma_read",
+        "annotation": "DMA read engine"
+      },
+      {
+        "id": 3,
+        "name": "dma_write",
+        "annotation": "DMA write engine"
+      },
+      {
+        "id": 4,
+        "name": "kernel_read",
+        "annotation": "Kernel/weight loading unit"
+      },
+      {
+        "id": 5,
+        "name": "pe",
+        "annotation": "Processing Element"
+      },
+      {
+        "id": 6,
+        "name": "ne_all",
+        "annotation": "All 16 Neural Engine sub-units"
+      },
+      {
+        "id": 7,
+        "name": "ne_0",
+        "annotation": "Neural Engine sub-unit 0"
+      },
+      {
+        "id": 8,
+        "name": "ne_1",
+        "annotation": "Neural Engine sub-unit 1"
+      },
+      {
+        "id": 9,
+        "name": "ne_2",
+        "annotation": "Neural Engine sub-unit 2"
+      },
+      {
+        "id": 10,
+        "name": "ne_3",
+        "annotation": "Neural Engine sub-unit 3"
+      },
+      {
+        "id": 11,
+        "name": "ne_4",
+        "annotation": "Neural Engine sub-unit 4"
+      },
+      {
+        "id": 12,
+        "name": "ne_5",
+        "annotation": "Neural Engine sub-unit 5"
+      },
+      {
+        "id": 13,
+        "name": "ne_6",
+        "annotation": "Neural Engine sub-unit 6"
+      },
+      {
+        "id": 14,
+        "name": "ne_7",
+        "annotation": "Neural Engine sub-unit 7"
+      },
+      {
+        "id": 15,
+        "name": "ne_8",
+        "annotation": "Neural Engine sub-unit 8"
+      },
+      {
+        "id": 16,
+        "name": "ne_9",
+        "annotation": "Neural Engine sub-unit 9"
+      },
+      {
+        "id": 17,
+        "name": "ne_10",
+        "annotation": "Neural Engine sub-unit 10"
+      },
+      {
+        "id": 18,
+        "name": "ne_11",
+        "annotation": "Neural Engine sub-unit 11"
+      },
+      {
+        "id": 19,
+        "name": "ne_12",
+        "annotation": "Neural Engine sub-unit 12"
+      },
+      {
+        "id": 20,
+        "name": "ne_13",
+        "annotation": "Neural Engine sub-unit 13"
+      },
+      {
+        "id": 21,
+        "name": "ne_14",
+        "annotation": "Neural Engine sub-unit 14"
+      },
+      {
+        "id": 22,
+        "name": "ne_15",
+        "annotation": "Neural Engine sub-unit 15"
+      },
+      {
+        "id": 24,
+        "name": "l2_cycle",
+        "annotation": ""
+      },
+      {
+        "id": 25,
+        "name": "l2_src1_read_active_cycle",
+        "annotation": ""
+      },
+      {
+        "id": 26,
+        "name": "l2_src1_read_idle_cycle",
+        "annotation": ""
+      },
+      {
+        "id": 27,
+        "name": "l2_src2_read_active_cycle",
+        "annotation": ""
+      },
+      {
+        "id": 28,
+        "name": "l2_src2_read_idle_cycle",
+        "annotation": ""
+      },
+      {
+        "id": 29,
+        "name": "l2_write_active_cycle",
+        "annotation": ""
+      },
+      {
+        "id": 30,
+        "name": "l2_write_idle_cycle",
+        "annotation": ""
+      },
+      {
+        "id": 31,
+        "name": "l2_read_conflict_cycle",
+        "annotation": ""
+      },
+      {
+        "id": 32,
+        "name": "l2_read_intra_conflict_cycle",
+        "annotation": ""
+      },
+      {
+        "id": 33,
+        "name": "l2_read_conflict_count",
+        "annotation": ""
+      },
+      {
+        "id": 34,
+        "name": "l2_read_intra_conflict_count",
+        "annotation": ""
+      },
+      {
+        "id": 35,
+        "name": "l2_write_conflict_cycle",
+        "annotation": ""
+      },
+      {
+        "id": 36,
+        "name": "l2_write_intra_conflict_cycle",
+        "annotation": ""
+      },
+      {
+        "id": 37,
+        "name": "l2_write_conflict_count",
+        "annotation": ""
+      },
+      {
+        "id": 38,
+        "name": "l2_write_intra_conflict_count",
+        "annotation": ""
+      },
+      {
+        "id": 39,
+        "name": "dma_src1_read_active_cycle",
+        "annotation": ""
+      },
+      {
+        "id": 40,
+        "name": "dma_src1_read_idle_cycle",
+        "annotation": ""
+      },
+      {
+        "id": 41,
+        "name": "dma_src1_read_conflict_cycle",
+        "annotation": ""
+      },
+      {
+        "id": 42,
+        "name": "dma_src1_read_intra_conflict_cycle",
+        "annotation": ""
+      },
+      {
+        "id": 43,
+        "name": "dma_src1_read_conflict_count",
+        "annotation": ""
+      },
+      {
+        "id": 44,
+        "name": "dma_src1_read_intra_conflict_count",
+        "annotation": ""
+      },
+      {
+        "id": 45,
+        "name": "dma_src2_read_active_cycle",
+        "annotation": ""
+      },
+      {
+        "id": 46,
+        "name": "dma_src2_read_idle_cycle",
+        "annotation": ""
+      },
+      {
+        "id": 47,
+        "name": "dma_src2_read_conflict_cycle",
+        "annotation": ""
+      },
+      {
+        "id": 48,
+        "name": "dma_src2_read_intra_conflict_cycle",
+        "annotation": ""
+      },
+      {
+        "id": 49,
+        "name": "dma_src2_read_conflict_count",
+        "annotation": ""
+      },
+      {
+        "id": 50,
+        "name": "dma_src2_read_intra_conflict_count",
+        "annotation": ""
+      },
+      {
+        "id": 51,
+        "name": "dma_write_active_cycle",
+        "annotation": ""
+      },
+      {
+        "id": 52,
+        "name": "dma_write_idle_cycle",
+        "annotation": ""
+      },
+      {
+        "id": 53,
+        "name": "dma_write_conflict_cycle",
+        "annotation": ""
+      },
+      {
+        "id": 54,
+        "name": "dma_write_intra_conflict_cycle",
+        "annotation": ""
+      },
+      {
+        "id": 55,
+        "name": "dma_write_conflict_count",
+        "annotation": ""
+      },
+      {
+        "id": 56,
+        "name": "dma_write_intra_conflict_count",
+        "annotation": ""
+      },
+      {
+        "id": 57,
+        "name": "idle_cycle",
+        "annotation": ""
+      },
+      {
+        "id": 58,
+        "name": "active_cycle",
+        "annotation": ""
+      },
+      {
+        "id": 59,
+        "name": "beat_count_in_64B",
+        "annotation": ""
+      },
+      {
+        "id": 60,
+        "name": "transaction_count",
+        "annotation": ""
+      },
+      {
+        "id": 61,
+        "name": "latency_product",
+        "annotation": ""
+      },
+      {
+        "id": 62,
+        "name": "latency_threshold",
+        "annotation": ""
+      },
+      {
+        "id": 63,
+        "name": "fabric_stall",
+        "annotation": ""
+      }
+    ]
+  },
+  "perfstats": {
+    "counters": []
+  }
+}
