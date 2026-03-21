@@ -280,10 +280,10 @@ def print_results(results, label, n_iter=0, elapsed=0):
     ane_rd = results['bw'].get('ANE0 RD|DCS BW', {})
     ane_wr = results['bw'].get('ANE0 WR|DCS BW', {})
     if ane_rw.get('utilization', 0) > 0:
-        est_bw = ane_rw['avg_state'] / 31 * 153.6  # M5 Air max
+        est_bw = 2.76 * ane_rw['avg_state'] - 10.2  # calibrated regression
         print(f"\n  Derived metrics:")
         print(f"    Est. ANE DRAM bandwidth:  ~{est_bw:.0f} GB/s "
-              f"(avg_state/31 * 153.6)")
+              f"(calibrated: 2.76 * state - 10.2)")
         rd = ane_rd.get('avg_state', 0)
         wr = ane_wr.get('avg_state', 0)
         if wr > 0:

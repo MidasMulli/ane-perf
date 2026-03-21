@@ -126,14 +126,17 @@ During LLM inference (Qwen3.5-0.8B FFN, 24 layers, 1024-dim):
 
 | Metric | Value |
 |--------|-------|
-| Estimated DRAM bandwidth | ~123 GB/s (80% of 153.6 GB/s theoretical) |
+| Estimated ANE DRAM bandwidth | ~58 GB/s (see calibration in Finding 6) |
 | RD:WR ratio | 26.6:1 |
 | ANE RD+WR utilization | 80.2% |
+| ANE avg BW state | 24.8 / 31 |
 | BW distribution | Bimodal: 22% idle (state 0) + 77% max (state 31) |
 | Fabric (NI3) utilization | 96.3% |
 | Throttle events | None (13 channels, all zero) |
 
 ANE runs full-throttle or sleeps. No intermediate bandwidth states during steady inference. The 22% idle time is between CoreML dispatch calls, not hardware idle.
+
+Note: an earlier version of this document reported ~123 GB/s, calculated as `(24.8/31) × 153.6 GB/s`. This was wrong -- it assumed state 31 maps to the full 153.6 GB/s system DRAM bandwidth. The calibration experiment (Finding 6) shows state 31 ≈ 75 GB/s. ANE's bandwidth ceiling is roughly half the total system DRAM, consistent with it being one agent on the SoC fabric.
 
 ### 4. 32 MB SRAM Boundary
 
@@ -168,7 +171,9 @@ The 32 IOReport bandwidth states map to actual GB/s via empirical calibration (w
 | 27.7 | 65.9 | 162.0 MB |
 | 19.0 | 44.6 | 200.0 MB |
 
-The relationship is roughly linear in the 22-28 state range (~2.5 GB/s per state). At the extremes, DRAM saturation (state 19 at 200MB) or dispatch overhead (state 22 at 5MB) distort the mapping. The calibration curve converts any IOReport state reading to approximate GB/s for this hardware.
+Linear regression across the 22-28 state range: **GB/s ≈ 2.76 × state - 10.2**. This gives state 31 ≈ 75 GB/s -- ANE's maximum DRAM bandwidth allocation, roughly half the 153.6 GB/s total system DRAM. At the extremes, DRAM saturation (state 19 at 200MB) or dispatch overhead (state 22 at 5MB) distort the mapping.
+
+This calibration corrects the naive formula `(avg_state / 31) × 153.6 GB/s` which overestimates by ~2x because it assumes ANE can consume the full system DRAM bandwidth.
 
 ### 7. Multi-Model Concurrent Execution
 
