@@ -22,11 +22,15 @@ Captures 32-state bandwidth histograms from IOReport's PMP group. Reports utiliz
 
 **experiments.py** -- Reproduce all findings from this repo.
 ```bash
-python3 experiments.py          # all experiments (~5 min)
-python3 experiments.py sram     # just SRAM boundary
-python3 experiments.py conv     # just conv vs linear
-python3 experiments.py dispatch # just dispatch threshold
-python3 experiments.py scaling  # just scaling behavior
+python3 experiments.py          # all experiments
+python3 experiments.py sram     # SRAM boundary
+python3 experiments.py conv     # conv vs linear
+python3 experiments.py dispatch # dispatch threshold
+python3 experiments.py scaling  # scaling behavior
+python3 experiments.py calibrate # BW state → GB/s calibration curve
+python3 experiments.py int8     # INT8 vs FP16 energy and performance
+python3 experiments.py thermal  # 10-minute sustained load throttle test
+python3 experiments.py multimodel # multi-model interference test
 ```
 Builds synthetic CoreML models at controlled sizes, measures via IOReport.
 
@@ -137,6 +141,62 @@ The 4x latency cliff at 32 MB per layer is the sharpest performance boundary we 
 
 An interesting anomaly: a single 52 MB layer is *faster* than a single 33.6 MB layer (0.953 ms vs 1.217 ms). When data clearly exceeds SRAM, ANE's DMA engine appears to pipeline weight streaming more efficiently than when the data barely spills.
 
+### 5. INT8 Has a Real Hardware Path
+
+INT8 quantization on ANE is **not** dequantized to FP16. It runs faster with less energy:
+
+| Dim | FP16 ms | INT8 ms | Speedup | Energy ratio | BW state |
+|-----|---------|---------|---------|--------------|----------|
+| 2048 | 1.099 | 0.695 | 1.58x | 0.69x | 25.7 → 21.3 |
+| 2560 | 1.621 | 0.954 | 1.70x | 0.65x | 27.2 → 23.8 |
+| 3072 | 2.256 | 1.202 | 1.88x | 0.51x | 28.1 → 26.6 |
+| 3584 | 3.033 | 1.594 | 1.90x | 0.81x | 28.3 → 27.3 |
+
+Speedup scales with dim (1.58x → 1.90x). INT8 transfers half the bytes, so bandwidth state drops -- ANE finishes faster and spends more time idle between layers. The energy savings (up to 49% at dim=3072) confirm the hardware processes INT8 natively rather than widening to FP16.
+
+### 6. BW State-to-GB/s Calibration
+
+The 32 IOReport bandwidth states map to actual GB/s via empirical calibration (weight_bytes / latency):
+
+| Avg BW state | Est. GB/s | Per-layer weight |
+|-------------|-----------|-----------------|
+| 22.1 | 51.8 | 40.5 MB |
+| 24.5 | 57.4 | 28.9 MB |
+| 25.7 | 60.5 | 35.3 MB |
+| 26.2 | 62.7 | 98.0 MB |
+| 27.5 | 65.0 | 128.0 MB |
+| 27.7 | 65.9 | 162.0 MB |
+| 19.0 | 44.6 | 200.0 MB |
+
+The relationship is roughly linear in the 22-28 state range (~2.5 GB/s per state). At the extremes, DRAM saturation (state 19 at 200MB) or dispatch overhead (state 22 at 5MB) distort the mapping. The calibration curve converts any IOReport state reading to approximate GB/s for this hardware.
+
+### 7. Multi-Model Concurrent Execution
+
+Running two CoreML models simultaneously on ANE shows **zero interference**:
+
+| Condition | Model B ms/pred | ANE util | ANE energy |
+|-----------|----------------|----------|------------|
+| Model B alone | 2.274 | 93.0% | 258 |
+| Model B + Model A background | 2.232 | 99.6% | 2,596 |
+
+Slowdown: **0.98x** (within noise). The background model completed 5,930 predictions while the foreground model ran 100 -- both at full speed. Energy jumped 10x confirming both models are active. ANE utilization rose from 93% to 99.6%.
+
+This means ANE either has concurrent execution capability or serializes models fast enough that per-prediction latency is unaffected. Either way, running multiple CoreML models on ANE does not degrade individual model performance.
+
+### 8. No Thermal Throttling Under Sustained Load
+
+10 minutes of continuous ANE inference on the passively-cooled M5 Air (8-layer Conv1d, dim=3072):
+
+| Metric | Value |
+|--------|-------|
+| Duration | 10 minutes, 120 samples at 5s intervals |
+| Latency range | 2.214 - 2.347 ms/pred (6% variance) |
+| Energy range | 5,001 - 5,750 per interval |
+| ANE utilization | 97.5 - 99.3% (steady) |
+| Throttle events | **Zero** across all 13 ANE_THROTTLE channels |
+
+No latency degradation from minute 0 to minute 10. ANE's power envelope on M5 is low enough that passive cooling never saturates, even at 99%+ utilization. This means ANE workloads can run indefinitely without thermal management concerns on current hardware.
+
 ## Methodology
 
 ### IOReport Bandwidth Histograms
@@ -216,13 +276,17 @@ The ANE driver architecture:
 
 2. **SRAM streaming anomaly**: Why is a 52 MB single layer faster than a 33.6 MB single layer? Is ANE's tiling/scheduling optimized for clear-spill cases?
 
-3. **BW state calibration**: What bandwidth (GB/s) does each of the 32 states represent? The states likely map to discrete frequency/voltage tiers, not a linear scale.
+3. **M5 Pro / M4 Max differences**: Does the SRAM boundary shift on chips with more/fewer NE cores? The 32 MB L2 may vary by chip.
 
-4. **M5 Pro / M4 Max differences**: Does the SRAM boundary shift on chips with more/fewer NE cores? The 32 MB L2 may vary by chip.
+4. **BW state nonlinearity at extremes**: The calibration curve (Finding 6) is roughly linear in the 22-28 state range but distorts at high DRAM saturation. What drives the nonlinearity?
 
-5. **INT8 vs FP16 energy**: The PerfTracer counters separate INT8_CYCLES and FP16_CYCLES. IOReport energy should differ between quantized and float models.
+5. **Concurrent execution mechanism**: Multi-model runs show zero interference (Finding 7), but we can't distinguish between true hardware concurrency and fast time-slicing from IOReport data alone. PerfTracer values would resolve this.
 
-6. **Throttle behavior under sustained load**: M5 Air is passively cooled. Does ANE throttle during extended inference? (Not observed in our 2-second windows.)
+## Answered Questions
+
+- ~~INT8 vs FP16 energy~~: **Answered** (Finding 5). ANE has a real INT8 path -- 1.6-1.9x faster, 0.5-0.8x energy. Not dequantized to FP16.
+- ~~BW state calibration~~: **Answered** (Finding 6). ~2.5 GB/s per state in the linear range (states 22-28), with distortion at extremes.
+- ~~Throttle behavior under sustained load~~: **Answered** (Finding 8). Zero throttle events across 10 minutes continuous load on passively-cooled M5 Air.
 
 ## License
 

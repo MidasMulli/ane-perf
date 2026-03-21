@@ -1,0 +1,1084 @@
+{
+  "thermal": [
+    {
+      "time_s": 5,
+      "preds": 2223,
+      "ms": 2.25,
+      "energy": 5483,
+      "util": 0.9826424987569498,
+      "avg": 29.9,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 10,
+      "preds": 2207,
+      "ms": 2.266,
+      "energy": 5320,
+      "util": 0.9791704319537321,
+      "avg": 29.7,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 15,
+      "preds": 2253,
+      "ms": 2.22,
+      "energy": 5741,
+      "util": 0.9928103097445173,
+      "avg": 30.3,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 20,
+      "preds": 2253,
+      "ms": 2.219,
+      "energy": 5736,
+      "util": 0.9925895802268312,
+      "avg": 30.3,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 25,
+      "preds": 2246,
+      "ms": 2.227,
+      "energy": 5718,
+      "util": 0.9919555294436662,
+      "avg": 30.3,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 31,
+      "preds": 2206,
+      "ms": 2.267,
+      "energy": 5254,
+      "util": 0.9894280292762266,
+      "avg": 30.1,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 36,
+      "preds": 2253,
+      "ms": 2.219,
+      "energy": 5627,
+      "util": 0.9924098671726755,
+      "avg": 30.4,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 41,
+      "preds": 2250,
+      "ms": 2.223,
+      "energy": 5722,
+      "util": 0.9923629626282254,
+      "avg": 30.3,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 46,
+      "preds": 2250,
+      "ms": 2.222,
+      "energy": 5726,
+      "util": 0.9926327683615819,
+      "avg": 30.3,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 51,
+      "preds": 2253,
+      "ms": 2.219,
+      "energy": 5734,
+      "util": 0.9921370147769895,
+      "avg": 30.3,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 56,
+      "preds": 2254,
+      "ms": 2.219,
+      "energy": 5734,
+      "util": 0.9925909193584821,
+      "avg": 30.3,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 61,
+      "preds": 2253,
+      "ms": 2.22,
+      "energy": 5728,
+      "util": 0.9923643428364886,
+      "avg": 30.3,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 66,
+      "preds": 2254,
+      "ms": 2.219,
+      "energy": 5739,
+      "util": 0.9922722342733189,
+      "avg": 30.3,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 71,
+      "preds": 2228,
+      "ms": 2.244,
+      "energy": 5672,
+      "util": 0.9849025900646386,
+      "avg": 30.1,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 76,
+      "preds": 2242,
+      "ms": 2.23,
+      "energy": 5716,
+      "util": 0.9902368468631351,
+      "avg": 30.2,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 81,
+      "preds": 2241,
+      "ms": 2.232,
+      "energy": 5720,
+      "util": 0.9921843234696183,
+      "avg": 30.3,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 86,
+      "preds": 2244,
+      "ms": 2.229,
+      "energy": 5710,
+      "util": 0.9916444605031389,
+      "avg": 30.3,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 92,
+      "preds": 2243,
+      "ms": 2.23,
+      "energy": 5723,
+      "util": 0.9919573468281222,
+      "avg": 30.3,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 97,
+      "preds": 2243,
+      "ms": 2.23,
+      "energy": 5673,
+      "util": 0.9922760738967433,
+      "avg": 30.3,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 102,
+      "preds": 2243,
+      "ms": 2.229,
+      "energy": 5702,
+      "util": 0.9916866217864727,
+      "avg": 30.3,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 107,
+      "preds": 2247,
+      "ms": 2.226,
+      "energy": 5725,
+      "util": 0.9924112385942723,
+      "avg": 30.4,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 112,
+      "preds": 2243,
+      "ms": 2.23,
+      "energy": 5725,
+      "util": 0.9929036340625566,
+      "avg": 30.3,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 117,
+      "preds": 2244,
+      "ms": 2.228,
+      "energy": 5720,
+      "util": 0.9923619271445359,
+      "avg": 30.3,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 122,
+      "preds": 2241,
+      "ms": 2.232,
+      "energy": 5724,
+      "util": 0.9920036141856788,
+      "avg": 30.3,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 127,
+      "preds": 2243,
+      "ms": 2.23,
+      "energy": 5722,
+      "util": 0.9923202023852548,
+      "avg": 30.3,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 132,
+      "preds": 2236,
+      "ms": 2.236,
+      "energy": 5703,
+      "util": 0.9899661016949153,
+      "avg": 30.2,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 137,
+      "preds": 2241,
+      "ms": 2.232,
+      "energy": 5726,
+      "util": 0.9920939688276486,
+      "avg": 30.3,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 142,
+      "preds": 2242,
+      "ms": 2.23,
+      "energy": 5723,
+      "util": 0.9920469950293719,
+      "avg": 30.3,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 148,
+      "preds": 2243,
+      "ms": 2.23,
+      "energy": 5721,
+      "util": 0.9924091812759804,
+      "avg": 30.3,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 153,
+      "preds": 2243,
+      "ms": 2.23,
+      "energy": 5709,
+      "util": 0.9920484322761363,
+      "avg": 30.3,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 158,
+      "preds": 2241,
+      "ms": 2.232,
+      "energy": 5712,
+      "util": 0.9921363040629095,
+      "avg": 30.3,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 163,
+      "preds": 2242,
+      "ms": 2.231,
+      "energy": 5723,
+      "util": 0.9921380806072655,
+      "avg": 30.3,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 168,
+      "preds": 2242,
+      "ms": 2.23,
+      "energy": 5712,
+      "util": 0.9922270426608821,
+      "avg": 30.3,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 173,
+      "preds": 2243,
+      "ms": 2.23,
+      "energy": 5730,
+      "util": 0.9925002258968103,
+      "avg": 30.3,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 178,
+      "preds": 2243,
+      "ms": 2.23,
+      "energy": 5715,
+      "util": 0.9922287986264854,
+      "avg": 30.3,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 183,
+      "preds": 2233,
+      "ms": 2.24,
+      "energy": 5710,
+      "util": 0.9873034520151817,
+      "avg": 30.1,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 188,
+      "preds": 2242,
+      "ms": 2.231,
+      "energy": 5706,
+      "util": 0.9919591633916068,
+      "avg": 30.3,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 193,
+      "preds": 2243,
+      "ms": 2.229,
+      "energy": 5724,
+      "util": 0.9915954995255524,
+      "avg": 30.3,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 198,
+      "preds": 2241,
+      "ms": 2.231,
+      "energy": 5720,
+      "util": 0.9918217964937647,
+      "avg": 30.3,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 203,
+      "preds": 2130,
+      "ms": 2.347,
+      "energy": 5607,
+      "util": 0.9460753319483335,
+      "avg": 28.5,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 209,
+      "preds": 2169,
+      "ms": 2.305,
+      "energy": 5417,
+      "util": 0.9652539309596964,
+      "avg": 29.2,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 214,
+      "preds": 2201,
+      "ms": 2.272,
+      "energy": 5258,
+      "util": 0.9775707696481867,
+      "avg": 29.6,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 219,
+      "preds": 2220,
+      "ms": 2.253,
+      "energy": 5561,
+      "util": 0.9834538878842677,
+      "avg": 29.9,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 224,
+      "preds": 2238,
+      "ms": 2.235,
+      "energy": 5681,
+      "util": 0.99114444494646,
+      "avg": 30.2,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 229,
+      "preds": 2218,
+      "ms": 2.255,
+      "energy": 5610,
+      "util": 0.9871203904555315,
+      "avg": 30.0,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 234,
+      "preds": 2223,
+      "ms": 2.249,
+      "energy": 5616,
+      "util": 0.9860784668233592,
+      "avg": 30.1,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 239,
+      "preds": 2225,
+      "ms": 2.248,
+      "energy": 5575,
+      "util": 0.9863967099019297,
+      "avg": 30.0,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 244,
+      "preds": 2225,
+      "ms": 2.248,
+      "energy": 5499,
+      "util": 0.9866594311038756,
+      "avg": 30.0,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 249,
+      "preds": 2198,
+      "ms": 2.275,
+      "energy": 5370,
+      "util": 0.9761850964797325,
+      "avg": 29.6,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 254,
+      "preds": 2252,
+      "ms": 2.221,
+      "energy": 5734,
+      "util": 0.9925457420374971,
+      "avg": 30.3,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 259,
+      "preds": 2250,
+      "ms": 2.222,
+      "energy": 5734,
+      "util": 0.9920466356364951,
+      "avg": 30.3,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 264,
+      "preds": 2251,
+      "ms": 2.222,
+      "energy": 5711,
+      "util": 0.9922284474968371,
+      "avg": 30.3,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 270,
+      "preds": 2253,
+      "ms": 2.22,
+      "energy": 5740,
+      "util": 0.9924095242398229,
+      "avg": 30.3,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 275,
+      "preds": 2252,
+      "ms": 2.22,
+      "energy": 5735,
+      "util": 0.9922266913725313,
+      "avg": 30.3,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 280,
+      "preds": 2252,
+      "ms": 2.221,
+      "energy": 5737,
+      "util": 0.9920932544164822,
+      "avg": 30.3,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 285,
+      "preds": 2250,
+      "ms": 2.222,
+      "energy": 5711,
+      "util": 0.9921384358198165,
+      "avg": 30.3,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 290,
+      "preds": 2252,
+      "ms": 2.221,
+      "energy": 5720,
+      "util": 0.991957710206479,
+      "avg": 30.3,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 295,
+      "preds": 2252,
+      "ms": 2.22,
+      "energy": 5719,
+      "util": 0.9922273939174838,
+      "avg": 30.3,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 300,
+      "preds": 2249,
+      "ms": 2.223,
+      "energy": 5727,
+      "util": 0.9921818510484454,
+      "avg": 30.3,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 305,
+      "preds": 2231,
+      "ms": 2.242,
+      "energy": 5654,
+      "util": 0.9859498531737068,
+      "avg": 30.0,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 310,
+      "preds": 2226,
+      "ms": 2.247,
+      "energy": 5535,
+      "util": 0.9856355587677297,
+      "avg": 30.0,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 315,
+      "preds": 2187,
+      "ms": 2.287,
+      "energy": 5308,
+      "util": 0.9729595297309518,
+      "avg": 29.4,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 320,
+      "preds": 2223,
+      "ms": 2.25,
+      "energy": 5617,
+      "util": 0.985813680310834,
+      "avg": 29.9,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 326,
+      "preds": 2223,
+      "ms": 2.25,
+      "energy": 5585,
+      "util": 0.9866196546424374,
+      "avg": 30.0,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 331,
+      "preds": 2219,
+      "ms": 2.254,
+      "energy": 5611,
+      "util": 0.9849923153421933,
+      "avg": 29.8,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 336,
+      "preds": 2197,
+      "ms": 2.276,
+      "energy": 5001,
+      "util": 0.9838148198381482,
+      "avg": 29.8,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 341,
+      "preds": 2220,
+      "ms": 2.253,
+      "energy": 5486,
+      "util": 0.9813316457984903,
+      "avg": 29.9,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 346,
+      "preds": 2222,
+      "ms": 2.251,
+      "energy": 5371,
+      "util": 0.983954802259887,
+      "avg": 29.9,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 351,
+      "preds": 2252,
+      "ms": 2.221,
+      "energy": 5733,
+      "util": 0.9921839703623385,
+      "avg": 30.3,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 356,
+      "preds": 2252,
+      "ms": 2.22,
+      "energy": 5726,
+      "util": 0.9924074659917748,
+      "avg": 30.3,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 361,
+      "preds": 2225,
+      "ms": 2.248,
+      "energy": 5642,
+      "util": 0.985494147950653,
+      "avg": 30.0,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 366,
+      "preds": 2237,
+      "ms": 2.235,
+      "energy": 5639,
+      "util": 0.9874836202611721,
+      "avg": 30.1,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 371,
+      "preds": 2204,
+      "ms": 2.269,
+      "energy": 5220,
+      "util": 0.9787965097879651,
+      "avg": 29.7,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 376,
+      "preds": 2252,
+      "ms": 2.221,
+      "energy": 5686,
+      "util": 0.992720860837327,
+      "avg": 30.4,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 381,
+      "preds": 2203,
+      "ms": 2.27,
+      "energy": 5616,
+      "util": 0.9794406036780986,
+      "avg": 29.7,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 387,
+      "preds": 2217,
+      "ms": 2.256,
+      "energy": 5601,
+      "util": 0.9866184448462929,
+      "avg": 29.9,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 392,
+      "preds": 2213,
+      "ms": 2.259,
+      "energy": 5586,
+      "util": 0.9857582059860747,
+      "avg": 29.9,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 397,
+      "preds": 2213,
+      "ms": 2.26,
+      "energy": 5395,
+      "util": 0.9829175704989154,
+      "avg": 29.9,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 402,
+      "preds": 2147,
+      "ms": 2.33,
+      "energy": 5314,
+      "util": 0.9472470843504204,
+      "avg": 28.7,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 407,
+      "preds": 2166,
+      "ms": 2.309,
+      "energy": 5279,
+      "util": 0.9636462289744981,
+      "avg": 29.3,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 412,
+      "preds": 2247,
+      "ms": 2.226,
+      "energy": 5714,
+      "util": 0.9924126095203686,
+      "avg": 30.4,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 417,
+      "preds": 2182,
+      "ms": 2.292,
+      "energy": 5465,
+      "util": 0.970863260604418,
+      "avg": 29.6,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 422,
+      "preds": 2241,
+      "ms": 2.231,
+      "energy": 5722,
+      "util": 0.9916414403831383,
+      "avg": 30.3,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 427,
+      "preds": 2241,
+      "ms": 2.231,
+      "energy": 5724,
+      "util": 0.9923608913800117,
+      "avg": 30.3,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 432,
+      "preds": 2242,
+      "ms": 2.231,
+      "energy": 5708,
+      "util": 0.9917751265365148,
+      "avg": 30.3,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 437,
+      "preds": 2241,
+      "ms": 2.231,
+      "energy": 5723,
+      "util": 0.9917766130489789,
+      "avg": 30.3,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 442,
+      "preds": 2242,
+      "ms": 2.231,
+      "energy": 5722,
+      "util": 0.9920487915066637,
+      "avg": 30.3,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 448,
+      "preds": 2238,
+      "ms": 2.234,
+      "energy": 5702,
+      "util": 0.9917751265365148,
+      "avg": 30.3,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 453,
+      "preds": 2239,
+      "ms": 2.233,
+      "energy": 5565,
+      "util": 0.9914989825910016,
+      "avg": 30.2,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 458,
+      "preds": 2249,
+      "ms": 2.224,
+      "energy": 5727,
+      "util": 0.992183617223151,
+      "avg": 30.3,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 463,
+      "preds": 2227,
+      "ms": 2.245,
+      "energy": 5644,
+      "util": 0.9846369346166012,
+      "avg": 30.0,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 468,
+      "preds": 2251,
+      "ms": 2.222,
+      "energy": 5714,
+      "util": 0.991869918699187,
+      "avg": 30.3,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 473,
+      "preds": 2250,
+      "ms": 2.222,
+      "energy": 5730,
+      "util": 0.992180790960452,
+      "avg": 30.3,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 478,
+      "preds": 2250,
+      "ms": 2.223,
+      "energy": 5713,
+      "util": 0.9926789587852495,
+      "avg": 30.3,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 483,
+      "preds": 2250,
+      "ms": 2.223,
+      "energy": 5707,
+      "util": 0.992001446066248,
+      "avg": 30.3,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 488,
+      "preds": 2248,
+      "ms": 2.224,
+      "energy": 5723,
+      "util": 0.9918199484792335,
+      "avg": 30.3,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 493,
+      "preds": 2250,
+      "ms": 2.223,
+      "energy": 5732,
+      "util": 0.992138791000271,
+      "avg": 30.3,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 498,
+      "preds": 2229,
+      "ms": 2.243,
+      "energy": 5635,
+      "util": 0.9855838756326826,
+      "avg": 30.0,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 503,
+      "preds": 2250,
+      "ms": 2.222,
+      "energy": 5727,
+      "util": 0.9920911104080987,
+      "avg": 30.3,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 509,
+      "preds": 2249,
+      "ms": 2.224,
+      "energy": 5720,
+      "util": 0.9918662449164031,
+      "avg": 30.3,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 514,
+      "preds": 2249,
+      "ms": 2.224,
+      "energy": 5727,
+      "util": 0.9922697888883866,
+      "avg": 30.3,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 519,
+      "preds": 2250,
+      "ms": 2.223,
+      "energy": 5716,
+      "util": 0.9918229049017393,
+      "avg": 30.3,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 524,
+      "preds": 2194,
+      "ms": 2.279,
+      "energy": 5255,
+      "util": 0.975267893475607,
+      "avg": 29.5,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 529,
+      "preds": 2252,
+      "ms": 2.221,
+      "energy": 5723,
+      "util": 0.9917265699172657,
+      "avg": 30.3,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 534,
+      "preds": 2213,
+      "ms": 2.26,
+      "energy": 5641,
+      "util": 0.9841427603343121,
+      "avg": 29.8,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 539,
+      "preds": 2235,
+      "ms": 2.238,
+      "energy": 5642,
+      "util": 0.9909156648287083,
+      "avg": 30.1,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 544,
+      "preds": 2221,
+      "ms": 2.252,
+      "energy": 5613,
+      "util": 0.9867564635689748,
+      "avg": 29.9,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 549,
+      "preds": 2221,
+      "ms": 2.251,
+      "energy": 5608,
+      "util": 0.98711281935338,
+      "avg": 30.0,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 554,
+      "preds": 2218,
+      "ms": 2.254,
+      "energy": 5675,
+      "util": 0.9924492471854229,
+      "avg": 30.2,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 559,
+      "preds": 2197,
+      "ms": 2.276,
+      "energy": 5614,
+      "util": 0.9859384184111769,
+      "avg": 29.9,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 565,
+      "preds": 2209,
+      "ms": 2.264,
+      "energy": 5664,
+      "util": 0.9920444785969353,
+      "avg": 30.1,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 570,
+      "preds": 2194,
+      "ms": 2.279,
+      "energy": 5595,
+      "util": 0.9858059849923153,
+      "avg": 29.9,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 575,
+      "preds": 2223,
+      "ms": 2.25,
+      "energy": 5681,
+      "util": 0.9921348822492428,
+      "avg": 30.2,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 580,
+      "preds": 2206,
+      "ms": 2.267,
+      "energy": 5550,
+      "util": 0.9857175141242938,
+      "avg": 30.0,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 585,
+      "preds": 2224,
+      "ms": 2.248,
+      "energy": 5510,
+      "util": 0.9851225468029303,
+      "avg": 30.0,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 590,
+      "preds": 2201,
+      "ms": 2.272,
+      "energy": 5290,
+      "util": 0.9785801437028334,
+      "avg": 29.7,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 595,
+      "preds": 2241,
+      "ms": 2.231,
+      "energy": 5726,
+      "util": 0.9923633077270674,
+      "avg": 30.3,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 600,
+      "preds": 2246,
+      "ms": 2.227,
+      "energy": 5715,
+      "util": 0.9922291497244059,
+      "avg": 30.3,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 605,
+      "preds": 2252,
+      "ms": 2.22,
+      "energy": 5735,
+      "util": 0.9922715357497967,
+      "avg": 30.3,
+      "throttle_ns": 0
+    },
+    {
+      "time_s": 610,
+      "preds": 2259,
+      "ms": 2.214,
+      "energy": 5750,
+      "util": 0.9927706488342671,
+      "avg": 30.4,
+      "throttle_ns": 0
+    }
+  ]
+}
