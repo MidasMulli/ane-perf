@@ -27,6 +27,15 @@ python3 measure.py --discover                    # list all ANE IOReport channel
 ```
 Captures 32-state bandwidth histograms from IOReport's PMP group. Reports utilization, average bandwidth state, peak state, energy, and throttle events.
 
+**profile.py** -- CoreML ANE profiler: per-operation execution scheduling and hardware measurements.
+```bash
+python3 profile.py model.mlpackage              # Profile any CoreML model
+python3 profile.py model.mlpackage --iters 200   # More iterations for accuracy
+python3 profile.py model.mlpackage --json         # JSON output
+python3 profile.py --build 1024 16 1              # Build and profile a test model
+```
+Uses ObjC runtime introspection to extract per-operation backend dispatch (ANE vs BNNS vs MPS Graph), estimated run time per backend from CoreML's E5 runtime cost model, and IOReport hardware counters. Shows which ops run on ANE, why (with per-backend cost comparison), and measured energy/bandwidth during execution. No entitlements required.
+
 **experiments.py** -- Reproduce all findings from this repo.
 ```bash
 python3 experiments.py          # all experiments
@@ -341,13 +350,32 @@ Opening the IOKit connection requires `com.apple.ane.iokit-user-access`. Unsigne
 
 The userspace ANE stack: CoreML -> Espresso -> AppleNeuralEngine.framework -> `aned` daemon -> IOKit driver. The `_ANEPerformanceStats` and `_ANEPerformanceStatsIOSurface` classes in AppleNeuralEngine.framework handle perf stat delivery, but are only usable from entitled processes.
 
+### E5 Runtime (macOS 26+)
+
+On macOS 26 (Tahoe), CoreML uses the E5 runtime (`MLE5Engine`), not the older `MLNeuralNetworkEngine`. The ANE is managed through compiled `e5rt_program_library` and `e5rt_execution_stream_operation` C++ objects -- there is no `_ANEInMemoryModel` ObjC object in the graph. This means:
+
+- `_ANEModel.setPerfStatsMask:` is **unreachable** from the E5 runtime path
+- Hardware perf counter values (`_ANEPerformanceStats.performanceCounters`) cannot be accessed through CoreML
+- The `profilingOptions` bitmask on `MLModelConfiguration` does not expose per-engine timing
+
+What IS accessible from E5 runtime (used by `profile.py`):
+
+- **Per-operation backend dispatch**: `MLE5ProgramLibrary.segmentationAnalyticsAndReturnError:` returns a dictionary with `SelectedBackend` (ane/bnns/mps_graph/classic_cpu), `EstimatedRunTime` per backend, and `BackendSupport` per backend for every MIL operation
+- **ANE cost model**: The `EstimatedRunTime.ane` values are CoreML's internal cost estimates for each op on ANE vs other backends. On a 1024x16 conv model: ANE=1.03ms vs BNNS=30.9ms vs MPS=10.5ms per op (30x estimated speedup)
+- **Prediction timing**: `MLPredictionEventMetric._featuresPredictionDuration` gives total wall-clock time
+- **IOReport hardware counters**: Energy, bandwidth histograms, throttle state (same as measure.py)
+
+ANE dispatch threshold confirmed via segmentation analytics: models with <16MB total weight dispatch to BNNS. Models ≥32MB or with seq_len≥64 dispatch to ANE. The threshold depends on both total weight AND per-op compute density.
+
 ### What This Means
 
-Getting PerfTracer counter values from userspace without SIP changes is not possible on current macOS. The counter names and register addresses documented here are the most that can be extracted. IOReport bandwidth/energy/throttle data (what measure.py provides) remains the richest ANE performance data accessible without entitlements.
+Getting PerfTracer counter values from userspace without SIP changes is not possible on current macOS. On macOS 26, the E5 runtime removes the `_ANEInMemoryModel` ObjC path entirely, making `perfStatsMask` unreachable even if the entitlement barrier were bypassed. The counter names and register addresses documented here are the maximum extractable information.
+
+However, the E5 runtime exposes **per-operation execution scheduling data** including backend selection and cost estimates. Combined with IOReport hardware measurements, this provides a complete profiling picture: which ops run where, why, and at what cost. This is what `profile.py` provides.
 
 ## Open Questions
 
-1. **PerfTracer values**: Kext disassembly confirms counter values are read via `ANEHWDevice::ReadPerformanceCounters()` during inference, gated by `perfStatsMask` and the `com.apple.ane.iokit-user-access` entitlement. No userspace path exists without SIP changes or running as aned. The counter names and MMIO register addresses documented in this repo are the maximum extractable information.
+1. **PerfTracer values**: Kext disassembly confirms counter values are read via `ANEHWDevice::ReadPerformanceCounters()` during inference, gated by `perfStatsMask` and the `com.apple.ane.iokit-user-access` entitlement. On macOS 26, the E5 runtime (`MLE5Engine`) bypasses the `_ANEInMemoryModel` ObjC layer entirely, making `perfStatsMask` unreachable even through ObjC runtime introspection. Framework-level probing (6 approaches tested: `profilingOptions`, `_ANEModel` swizzling, Espresso profiling, `MLPredictionEvent`, `MLComputePlan`, `enableInstrumentsTracing`) confirms no path to hardware counter values without the IOKit entitlement. The per-operation cost model from `segmentationAnalytics` (used by `profile.py`) is the deepest profiling data available.
 
 2. **SRAM streaming anomaly**: Why is a 52 MB single layer faster than a 33.6 MB single layer? Is ANE's tiling/scheduling optimized for clear-spill cases?
 
