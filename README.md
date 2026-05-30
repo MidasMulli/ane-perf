@@ -1,6 +1,6 @@
 # ane-perf
 
-Hardware performance characterization of the Apple Neural Engine via IOReport bandwidth histograms. First published characterization of ANE bandwidth behavior, SRAM boundaries, and dispatch thresholds during LLM inference on Apple Silicon.
+Hardware performance characterization of the Apple Neural Engine via IOReport bandwidth histograms. First IOReport-histogram GB/s DRAM-bandwidth method for ANE bandwidth behavior, SRAM boundaries, and dispatch thresholds during LLM inference on Apple Silicon. The SRAM-boundary finding is shared prior art: maderix (Inside the M4 ANE, Part 2, 2026-02-28) independently placed the ANE on-chip SRAM at ~32 MB via the same 24MB-fast / 96MB-slow cliff (TFLOPS wall-clock, not GB/s).
 
 No root. No SIP changes. No entitlements. Runs on any Mac with Apple Silicon.
 
@@ -160,11 +160,13 @@ Note: an earlier version of this document reported ~123 GB/s, calculated as `(24
 
 The 4x latency cliff at 32 MB per layer is the sharpest performance boundary we found. Energy per prediction jumps 3.3x. DRAM utilization saturates at 99.2%.
 
+The ~32 MB SRAM placement is shared prior art: maderix (Inside the M4 ANE, Part 2, 2026-02-28) independently placed the ANE on-chip SRAM at ~32 MB via the same 24MB-fast / 96MB-slow cliff. maderix measured this in TFLOPS via wall-clock; this repo's contribution is the IOReport-histogram GB/s DRAM-bandwidth method, not first discovery of the boundary itself.
+
 An interesting anomaly: a single 52 MB layer is *faster* than a single 33.6 MB layer (0.953 ms vs 1.217 ms). When data clearly exceeds SRAM, ANE's DMA engine appears to pipeline weight streaming more efficiently than when the data barely spills.
 
-### 5. INT8 Has a Real Hardware Path
+### 5. INT8 Saves Bandwidth, Not Compute Cycles
 
-INT8 quantization on ANE is **not** dequantized to FP16. It runs faster with less energy:
+INT8 weights on ANE are dequantized to FP16 before compute; INT8 saves memory bandwidth, not compute cycles. This matches maderix's finding and our own Q8 = FP16-speed result. The speedup below is a bandwidth effect (half the weight bytes streamed from DRAM), not a wider/faster compute path:
 
 | Dim | FP16 ms | INT8 ms | Speedup | Energy ratio | BW state |
 |-----|---------|---------|---------|--------------|----------|
@@ -173,7 +175,7 @@ INT8 quantization on ANE is **not** dequantized to FP16. It runs faster with les
 | 3072 | 2.256 | 1.202 | 1.88x | 0.51x | 28.1 → 26.6 |
 | 3584 | 3.033 | 1.594 | 1.90x | 0.81x | 28.3 → 27.3 |
 
-Speedup scales with dim (1.58x → 1.90x). INT8 transfers half the bytes, so bandwidth state drops -- ANE finishes faster and spends more time idle between layers. The energy savings (up to 49% at dim=3072) confirm the hardware processes INT8 natively rather than widening to FP16.
+Speedup scales with dim (1.58x → 1.90x). INT8 transfers half the bytes, so bandwidth state drops -- ANE finishes faster and spends more time idle between layers. The energy savings (up to 49% at dim=3072) come from moving half the weight bytes, consistent with INT8 weights being dequantized to FP16 for compute (bandwidth saving, not a native INT8 compute path).
 
 ### 6. BW State-to-GB/s Calibration
 
@@ -220,7 +222,7 @@ No measurable interference at median latency, but expect occasional scheduling s
 | ANE utilization | 97.5 - 99.3% (steady) |
 | Throttle events | **Zero** across all 13 ANE_THROTTLE channels |
 
-No latency degradation from minute 0 to minute 10. ANE's power envelope on M5 is low enough that passive cooling never saturates, even at 99%+ utilization. This means ANE workloads can run indefinitely without thermal management concerns on current hardware.
+No latency degradation from minute 0 to minute 10. Over this 10-minute test, ANE's power envelope on the passively-cooled M5 Air stayed low enough that no throttling appeared, even at 99%+ utilization. Longer-duration or higher-ambient behavior was not tested; this result is scoped to the 10-minute window measured here.
 
 ## Methodology
 
@@ -292,8 +294,8 @@ Extracted from the kernelcache `ANEH17Hidra_PerfCtr` table via kext disassembly 
 | Activity | ANE_NE_ACTIVITY_COUNT | 38 | 2 addrs |
 | Activity | ANE_NE_ACTIVITY_COUNT_NZD | 39 | 2 addrs |
 | MAC | ANE_MAC_THOTTLE_WIN0 | 37 | 6 addrs |
-| Datatype | ANE_FP16_CYCLES | — | — |
-| Datatype | ANE_INT8_CYCLES | — | — |
+| Datatype | ANE_FP16_CYCLES | - | - |
+| Datatype | ANE_INT8_CYCLES | - | - |
 
 Register address ranges: `0x01910xxx` (base config), `0x01914xxx` (alt config), `0x01978xxx` (primary config). The multiple register banks suggest per-NE-cluster counters or different sampling configurations.
 
@@ -389,7 +391,7 @@ However, the E5 runtime exposes **per-operation execution scheduling data** incl
 
 ## Answered Questions
 
-- ~~INT8 vs FP16 energy~~: **Answered** (Finding 5). ANE has a real INT8 path -- 1.6-1.9x faster, 0.5-0.8x energy. Not dequantized to FP16.
+- ~~INT8 vs FP16 energy~~: **Answered** (Finding 5). INT8 is 1.6-1.9x faster, 0.5-0.8x energy -- a bandwidth saving from moving half the weight bytes, not a native INT8 compute path. INT8 weights are dequantized to FP16 before compute.
 - ~~BW state calibration~~: **Answered** (Finding 6). ~2.5 GB/s per state in the linear range (states 22-28), with distortion at extremes.
 - ~~Throttle behavior under sustained load~~: **Answered** (Finding 8). Zero throttle events across 10 minutes continuous load on passively-cooled M5 Air.
 
