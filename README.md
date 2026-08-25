@@ -1,6 +1,6 @@
 # ane-perf
 
-Hardware performance characterization of the Apple Neural Engine via IOReport bandwidth histograms. First IOReport-histogram GB/s DRAM-bandwidth method for ANE bandwidth behavior, SRAM boundaries, and dispatch thresholds during LLM inference on Apple Silicon. The SRAM-boundary finding is shared prior art: maderix (Inside the M4 ANE, Part 2, 2026-02-28) independently placed the ANE on-chip SRAM at ~32 MB via the same 24MB-fast / 96MB-slow cliff (TFLOPS wall-clock, not GB/s).
+Hardware performance characterization of the Apple Neural Engine via IOReport bandwidth histograms. An IOReport-histogram GB/s method for ANE DRAM-bandwidth behavior, SRAM boundaries, and dispatch thresholds during LLM inference on Apple Silicon. The SRAM-boundary finding is shared prior art: maderix (Inside the M4 ANE, Part 2, 2026-02-28) independently placed the ANE on-chip SRAM at ~32 MB via the same 24MB-fast / 96MB-slow cliff (TFLOPS wall-clock, not GB/s).
 
 No root. No SIP changes. No entitlements. Runs on any Mac with Apple Silicon.
 
